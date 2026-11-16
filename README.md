@@ -2,33 +2,30 @@
 
 An end-to-end Machine Learning and Data Science project focused on analyzing global energy infrastructure and predicting installed power plant capacity (`capacity_mw`) using the **Global Power Plant Database**.
 
-The project covers the complete Machine Learning lifecycle, from exploratory data analysis and data preprocessing to model selection, hyperparameter optimization, model evaluation, API development, and Docker containerization.
+The project covers the complete Machine Learning lifecycle, from exploratory data analysis and data preprocessing to model selection, hyperparameter optimization, model evaluation, API development, Docker containerization, and cloud deployment.
 
-The final solution uses an optimized **Random Forest Regressor** served through a REST API built with Flask and deployed inside a Docker container.
+The final solution uses an optimized **Random Forest Regressor** served through a REST API built with Flask, containerized with Docker, and deployed on **Render**.
 
 ---
 
 ## 📌 Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Business Problem](#business-problem)
-3. [Dataset](#dataset)
-4. [Project Workflow](#project-workflow)
-5. [Exploratory Data Analysis](#exploratory-data-analysis)
-6. [Data Preprocessing](#data-preprocessing)
-7. [Model Development and Benchmarking](#model-development-and-benchmarking)
-8. [Hyperparameter Optimization](#hyperparameter-optimization)
-9. [Model Evaluation](#model-evaluation)
-10. [Model Interpretation](#model-interpretation)
-11. [API Development with Flask](#api-development-with-flask)
-12. [Docker Deployment](#docker-deployment)
-13. [Project Structure](#project-structure)
-14. [Technologies and Tools](#technologies-and-tools)
-15. [Installation and Setup](#installation-and-setup)
-16. [Running the API](#running-the-api)
-17. [Testing the Prediction Endpoint](#testing-the-prediction-endpoint)
-18. [Key Findings and Limitations](#key-findings-and-limitations)
-19. [Future Improvements](#future-improvements)
+1. [Project Overview](#1-project-overview)
+2. [Business Problem](#2-business-problem)
+3. [Dataset](#3-dataset)
+4. [Project Workflow](#4-project-workflow)
+5. [Exploratory Data Analysis](#5-exploratory-data-analysis)
+6. [Data Preprocessing](#6-data-preprocessing)
+7. [Model Development and Benchmarking](#7-model-development-and-benchmarking)
+8. [Hyperparameter Optimization](#8-hyperparameter-optimization)
+9. [Model Evaluation](#9-model-evaluation)
+10. [Model Interpretation](#10-model-interpretation)
+11. [API Development with Flask](#11-api-development-with-flask)
+12. [Instructions on How to Run the Project Locally](#12-instructions-on-how-to-run-the-project-locally)
+13. [Cloud Deployment (Render)](#13-cloud-deployment-render)
+14. [Technologies and Tools](#14-technologies-and-tools)
+15. [Key Findings and Limitations](#15-key-findings-and-limitations)
+16. [Future Improvements](#16-future-improvements)
 
 ---
 
@@ -50,7 +47,6 @@ data/
     └── global_power_plant_database.csv
 ```
 
-
 Using geographical, structural, and operational characteristics, the model estimates the installed capacity of a power plant in megawatts (MW).
 
 The project follows an end-to-end Machine Learning workflow, emphasizing:
@@ -61,7 +57,7 @@ The project follows an end-to-end Machine Learning workflow, emphasizing:
 - Prevention of data leakage.
 - Model serialization and deployment.
 - REST API development.
-- Containerization with Docker.
+- Containerization with Docker and cloud hosting on Render.
 
 The final model achieved an **R² score of 0.8677** on the hold-out test set, demonstrating strong predictive performance.
 
@@ -203,7 +199,7 @@ After selecting the final model, the complete preprocessing and prediction pipel
 
 A REST API was developed using Flask to expose the model through HTTP requests.
 
-Finally, the API was containerized using Docker, with dependencies managed through Pipenv and Gunicorn used as the WSGI server.
+Finally, the API was containerized using Docker, with dependencies managed through Pipenv, Gunicorn used as the WSGI server, and hosted publicly on Render.
 
 ---
 
@@ -211,7 +207,7 @@ Finally, the API was containerized using Docker, with dependencies managed throu
 
 The exploratory analysis revealed several relevant characteristics of the dataset.
 
-### Missing Values
+### 5.1 Missing Values
 
 A missing value analysis was conducted across all 36 features.
 
@@ -223,7 +219,7 @@ Some variables presented significant sparsity, particularly:
 
 These findings guided the preprocessing strategy.
 
-### Target Variable Distribution
+### 5.2 Target Variable Distribution
 
 The installed capacity variable (`capacity_mw`) presented a heavily right-skewed distribution.
 
@@ -231,7 +227,7 @@ Most power plants have relatively small installed capacities, while a limited nu
 
 Logarithmic scaling was used during exploratory analysis to improve visualization.
 
-### Geographic and Energy Analysis
+### 5.3 Geographic and Energy Analysis
 
 Capacity distributions were also explored across:
 
@@ -353,7 +349,7 @@ The best-performing configuration was selected based on cross-validation perform
 
 The optimized models were evaluated on an independent hold-out test set.
 
-### Hold-Out Test Set Results
+### 9.1 Hold-Out Test Set Results
 
 | Model | Test RMSE | Test MAE | Test R² |
 |---|---:|---:|---:|
@@ -362,7 +358,7 @@ The optimized models were evaluated on an independent hold-out test set.
 
 The Random Forest model was selected as the final model because it achieved better results across all three evaluation metrics.
 
-### Performance Interpretation
+### 9.2 Performance Interpretation
 
 **R² = 0.8677**
 
@@ -386,7 +382,7 @@ Feature importance analysis was performed to understand which variables contribu
 
 Additionally, Actual vs. Predicted scatter plots were generated to assess prediction quality and identify systematic errors.
 
-### Outlier Behavior
+### 10.1 Outlier Behavior
 
 The diagnostic plots showed relatively strong alignment with the ideal prediction line (`y = x`) for small and medium-sized power plants.
 
@@ -398,14 +394,13 @@ Consequently, extreme mega-plants can contribute disproportionately to RMSE.
 
 ---
 
-
 ## 11. API Development with Flask
 
 To make the trained Machine Learning model accessible, a REST API was developed using **Flask**.
 
 The API loads the serialized Random Forest pipeline (`final_rf_pipeline.pkl`), including its preprocessing transformations, and provides an interface for generating predictions from new power plant data.
 
-### API Architecture
+### 11.1 API Architecture
 
 The prediction service follows these steps:
 
@@ -419,14 +414,14 @@ The prediction service follows these steps:
 8. Generates a capacity prediction using the Random Forest model.
 9. Returns the result as a JSON response.
 
-### Available Endpoints
+### 11.2 Available Endpoints
 
 | Endpoint | Method | Description |
 |---|---|---|
 | `/health` | GET | Checks API availability |
 | `/predict` | POST | Predicts installed power plant capacity |
 
-### Prediction Output
+### 11.3 Prediction Output
 
 The `/predict` endpoint returns the estimated installed capacity in megawatts (MW), using the following JSON structure:
 
@@ -440,15 +435,14 @@ The API runs on port `9696` and uses **Gunicorn** as its WSGI server when deploy
 
 ---
 
-## 12. Instructions on How to Run the Project
+## 12. Instructions on How to Run the Project Locally
 
-Follow these steps to clone the repository, install dependencies, build the Docker image, and run the prediction service.
+Follow these steps to clone the repository, install dependencies, build the Docker image, and run the prediction service locally.
 
 ### 12.1 Clone the Repository
 
 ```bash
-git clone https://github.com/Asier845/Global-Power-Plant-Capacity-Prediction.git
-
+git clone [https://github.com/Asier845/Global-Power-Plant-Capacity-Prediction.git](https://github.com/Asier845/Global-Power-Plant-Capacity-Prediction.git)
 cd Global-Power-Plant-Capacity-Prediction
 ```
 
@@ -456,27 +450,15 @@ cd Global-Power-Plant-Capacity-Prediction
 
 The project uses **Pipenv** for dependency management.
 
-Install Pipenv:
-
 ```bash
 pip install pipenv
-```
-
-Install the project dependencies:
-
-```bash
 pipenv install
-```
-```bash
 pipenv shell
 ```
 
-
 ### 12.3 Build the Docker Image
 
-Make sure Docker Desktop is running.
-
-Build the Docker image from the project root directory:
+Make sure Docker Desktop is running, then build the image from the project root directory:
 
 ```bash
 docker build -t power-plant-capacity .
@@ -490,11 +472,9 @@ Start the container and expose port `9696`:
 docker run -d --name power-plant-service -p 9696:9696 power-plant-capacity
 ```
 
-The service will be available at:
+The service will be available locally at `http://localhost:9696`.
 
-`http://localhost:9696`
-
-### 12.5 Test the API
+### 12.5 Test the Local API
 
 First, verify that the service is running:
 
@@ -510,9 +490,7 @@ Expected response:
 }
 ```
 
-To generate a prediction, send a POST request with the power plant characteristics.
-
-Example using PowerShell:
+To generate a prediction, send a POST request with the power plant characteristics using PowerShell:
 
 ```powershell
 $body = @{
@@ -540,35 +518,112 @@ predicted_capacity_mw
 
 ### 12.6 Docker Management
 
-Useful commands to manage the Docker container:
-
-**Check running containers:**
+Useful commands to manage the local Docker container:
 
 ```bash
-docker ps
+docker ps                              # Check running containers
+docker logs power-plant-service        # View application logs
+docker stop power-plant-service        # Stop the container
+docker rm power-plant-service          # Remove the container
+docker rmi power-plant-capacity        # Remove the Docker image
 ```
 
-**View application logs:**
+---
+
+## 13. Cloud Deployment (Render)
+
+The Dockerized REST API is deployed in the cloud on **Render**, making the prediction service publicly accessible without requiring local setup.
+
+**Live Base URL:**
+
+https://global-power-plant-capacity-prediction.onrender.com
+
+> **Note on Free Tier Cold Starts:** Because this service runs on Render's free instance tier, the container automatically spins down after 15 minutes of inactivity. The first request after an idle period may take **30 to 50 seconds** to respond while the service wakes up; subsequent requests will execute immediately.
+
+### 13.1 Health Check (Cloud)
+
+Verify that the cloud service is live and responding:
 
 ```bash
-docker logs power-plant-service
+curl [https://global-power-plant-capacity-prediction.onrender.com/health](https://global-power-plant-capacity-prediction.onrender.com/health)
 ```
 
-**Stop the container:**
+Expected response:
+
+```json
+{
+    "status": "ok"
+}
+```
+
+### 13.2 Generate a Prediction (Cloud)
+
+Send a `POST` request directly to the live `/predict` endpoint:
+
+**Using `curl` (Linux / macOS / Git Bash):**
 
 ```bash
-docker stop power-plant-service
+curl -X POST "[https://global-power-plant-capacity-prediction.onrender.com/predict](https://global-power-plant-capacity-prediction.onrender.com/predict)" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "latitude": 28.6139,
+           "longitude": 77.2090,
+           "country": "IND",
+           "primary_fuel": "Solar",
+           "commissioning_year": 2015
+         }'
 ```
 
-**Remove the container:**
+**Using PowerShell (Windows):**
 
-```bash
-docker rm power-plant-service
+```powershell
+$body = @{
+    latitude = 28.6139
+    longitude = 77.2090
+    country = "IND"
+    primary_fuel = "Solar"
+    commissioning_year = 2015
+} | ConvertTo-Json
+
+Invoke-RestMethod `
+    -Uri "[https://global-power-plant-capacity-prediction.onrender.com/predict](https://global-power-plant-capacity-prediction.onrender.com/predict)" `
+    -Method Post `
+    -ContentType "application/json" `
+    -Body $body
 ```
 
-**Remove the Docker image:**
+Example output:
 
-```bash
-docker rmi power-plant-capacity
+```text
+predicted_capacity_mw
+---------------------
+52.4197
 ```
 
+---
+
+## 14. Technologies and Tools
+
+- **Programming Language:** Python 3.14+
+- **Data Manipulation & Analysis:** Pandas, NumPy
+- **Machine Learning & Preprocessing:** Scikit-learn, XGBoost, Joblib
+- **Visualization:** Matplotlib, Seaborn
+- **API & Web Server:** Flask, Gunicorn
+- **Dependency Management:** Pipenv
+- **Containerization & Cloud Hosting:** Docker, Render, Git/GitHub
+
+---
+
+## 15. Key Findings and Limitations
+
+- **Primary Fuel & Country Dominance:** Primary energy source (`primary_fuel`) and geographic location (`country`, `latitude`, `longitude`) are among the strongest drivers of installed power plant capacity.
+- **Right-Skewed Capacity Distribution:** The presence of mega-infrastructure facilities (e.g., large hydroelectric and nuclear power plants) creates heavy tails that disproportionately impact RMSE compared to MAE.
+- **Extrapolation Constraints:** Tree-based ensemble methods such as Random Forest average predictions across leaf nodes, causing systematic underestimation on extreme outlier facilities beyond the typical training distribution.
+
+---
+
+## 16. Future Improvements
+
+- **Target Transformation:** Experiment with log-transformation (`np.log1p(capacity_mw)`) during training to mitigate right-skewness and improve predictions on extreme mega-plants.
+- **Interactive Frontend:** Build a lightweight web UI (e.g., Streamlit or HTML/JS form) connected to the Render API for interactive map-based capacity estimation.
+- **CI/CD Automation:** Add GitHub Actions workflows to automatically run unit tests (`pytest`) and validate Docker builds upon every push to `main`.

@@ -1,7 +1,7 @@
 
 import requests
 
-url = "http://localhost:9696/predict"
+url = "https://global-power-plant-capacity-prediction.onrender.com/predict"
 
 plant_data = {
     "latitude": 28.6139,
