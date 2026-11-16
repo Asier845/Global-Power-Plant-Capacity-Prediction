@@ -1,0 +1,30 @@
+
+# Dataset - never upload raw data
+data/
+*.csv
+*.xlsx
+*.parquet
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Machine Learning models
+*.pkl
+*.joblib
+*.h5
+*.pt
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
